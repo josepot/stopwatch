@@ -6,7 +6,7 @@ const mainButton = document.getElementById("mainButton");
 const secondaryButton = document.getElementById("secondaryButton");
 const lapTable = document.getElementById("lapTable");
 
-const [getCounterState, counter] = getCounter((elapsedTime) => {
+const [getCounterState, dispatchCounter] = getCounter((elapsedTime) => {
   counterEl.childNodes[0].replaceWith(getFormattedTime(elapsedTime));
 });
 
@@ -75,12 +75,12 @@ function lap(elapsedTime) {
 
 mainButton.onclick = () => {
   if (getCounterState().isRunning) {
-    counter.stop();
+    dispatchCounter("stop");
     mainButton.childNodes[0].replaceWith("Start");
     mainButton.className = "stopped";
     secondaryButton.childNodes[0].replaceWith("Reset");
   } else {
-    counter.start();
+    dispatchCounter("start");
     mainButton.childNodes[0].replaceWith("Stop");
     mainButton.className = "started";
     secondaryButton.childNodes[0].replaceWith("Lap");
@@ -91,7 +91,7 @@ secondaryButton.onclick = () => {
   if (getCounterState().isRunning) {
     lap(getCounterState().elapsedTime);
   } else {
-    counter.reset();
+    dispatchCounter("reset");
     lapTable.innerHTML = "";
     laps.nRows = 0;
     laps.total = 0;
