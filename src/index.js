@@ -73,6 +73,12 @@ function createLap(elapsedTime) {
   }
 }
 
+function resetLaps() {
+  lapTable.innerHTML = "";
+  laps.nRows = 0;
+  laps.total = 0;
+}
+
 mainButton.onclick = () => {
   if (getCounterState().isRunning) {
     dispatchCounter("stop");
@@ -92,8 +98,6 @@ secondaryButton.onclick = () => {
     createLap(getCounterState().elapsedTime);
   } else {
     dispatchCounter("reset");
-    lapTable.innerHTML = "";
-    laps.nRows = 0;
-    laps.total = 0;
+    resetLaps();
   }
 };
