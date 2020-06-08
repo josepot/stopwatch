@@ -1,58 +1,10 @@
+import getFormattedTime from "./getFormattedTime.js";
+import getCounter from "./getCounter.js";
+
 const counterEl = document.getElementById("timer");
 const mainButton = document.getElementById("mainButton");
 const secondaryButton = document.getElementById("secondaryButton");
 const lapTable = document.getElementById("lapTable");
-
-// cb: (elapsedTime: number) => void
-function getCounter(cb) {
-  let startTime = 0;
-  let token = undefined;
-
-  const isRunning = () => token !== undefined;
-  const getState = () => ({
-    isRunning: isRunning(),
-    elapsedTime: (token !== undefined ? Date.now() : 0) - startTime,
-  });
-
-  const refresh = () => {
-    cb(Date.now() - startTime);
-    token = requestAnimationFrame(refresh);
-  };
-
-  return [
-    getState,
-    {
-      start: () => {
-        if (isRunning()) return;
-        startTime += Date.now();
-        refresh();
-      },
-      stop: () => {
-        if (!isRunning()) return;
-        startTime -= Date.now();
-        cancelAnimationFrame(token);
-        token = undefined;
-      },
-      reset: () => {
-        if (isRunning() || startTime === 0) return;
-        startTime = 0;
-        cb(0);
-      },
-    },
-  ];
-}
-
-// totalMilliseconds: number
-const getFormattedTime = (totalMilliseconds) => {
-  const totalSeconds = totalMilliseconds / 1000;
-  const [minutes, seconds, centis] = [
-    totalSeconds / 60,
-    totalSeconds % 60,
-    (totalMilliseconds % 1000) / 10,
-  ].map((total) => Math.floor(total).toString(10).padStart(2, "0"));
-
-  return `${minutes}:${seconds}.${centis}`;
-};
 
 const [getCounterState, counter] = getCounter((elapsedTime) => {
   counterEl.childNodes[0].replaceWith(getFormattedTime(elapsedTime));
