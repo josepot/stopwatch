@@ -27,7 +27,7 @@ const LapType = {
   DEFAULT: "",
 };
 
-function lap(elapsedTime) {
+function createLap(elapsedTime) {
   const time = elapsedTime - laps.total;
 
   const indexCol = document.createElement("td");
@@ -89,7 +89,7 @@ mainButton.onclick = () => {
 
 secondaryButton.onclick = () => {
   if (getCounterState().isRunning) {
-    lap(getCounterState().elapsedTime);
+    createLap(getCounterState().elapsedTime);
   } else {
     dispatchCounter("reset");
     lapTable.innerHTML = "";
