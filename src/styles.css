@@ -12,4 +12,87 @@
 
 body {
   background-color: black;
+  color: white;
+  max-width: 250px;
+}
+
+#timer {
+  height: 200px;
+  line-height: 200px;
+  font-size: 64px;
+  font-family: "Helvetica Neue";
+}
+
+#actionButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+#actionButtons button {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  color: white;
+  border-style: none;
+  outline: none;
+}
+
+#mainButton.started {
+  background-color: darkred;
+  color: red;
+}
+
+#mainButton.stopped {
+  background-color: #336600;
+  color: lightgreen;
+}
+
+#secondaryButton {
+  background-color: grey;
+}
+
+#secondaryButton:disabled {
+  background-color: #404040;
+}
+
+#lapTableDiv {
+  font-family: "Helvetica Neue Roman";
+  margin-top: 24px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+#lapTable {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#lapTable tr {
+  height: 32px;
+}
+
+#lapTable td {
+  border-style: solid;
+  border-color: #202020;
+  border-width: 1px 0px;
+}
+
+#lapTable td:nth-child(odd) {
+  text-align: start;
+}
+
+#lapTable td:nth-child(even) {
+  text-align: end;
+}
+
+#lapTable td:nth-child(even).scrollVisible {
+  padding-right: 10px;
+}
+
+.min {
+  color: green;
+}
+
+.max {
+  color: red;
 }
