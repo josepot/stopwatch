@@ -6,22 +6,43 @@ const mainButton = document.getElementById("mainButton");
 const secondaryButton = document.getElementById("secondaryButton");
 const lapTable = document.getElementById("lapTable");
 
-const [getCounterState, dispatchCounter] = getCounter((elapsedTime) => {
-  counterEl.childNodes[0].replaceWith(getFormattedTime(elapsedTime));
+const enhanceCounter = (mapperFn) => (cb) => {
+  const [
+    getNormalCounterState,
+    normalCounterDispatch,
+  ] = getCounter((elapsedTime) => cb(mapperFn(elapsedTime)));
+  return [
+    () => {
+      const { isRunning, elapsedTime } = getNormalCounterState();
+      return { isRunning, elapsedTime: mapperFn(elapsedTime) };
+    },
+    normalCounterDispatch,
+  ];
+};
+
+const getSpaceCounter = enhanceCounter((elapsedTime) => elapsedTime * 0.1);
+
+const [getCounterState, dispatchCounter] = getSpaceCounter((elapsedTime) => {
+  const formattedTime = getFormattedTime(elapsedTime);
+  counterEl.childNodes[0].replaceWith(formattedTime);
 });
 
-/*inteface Laps {
+/*
+inteface Laps {
   min?: { idx: number; time: number };
   max?: { idx: number; time: number };
   nRows: number;
   total: number;
-}*/
+}
+*/
 let laps = {
+  min: undefined,
+  max: undefined,
   nRows: 0,
   total: 0,
 };
 
-const LapType = {
+const LapTypes = {
   MIN: "min",
   MAX: "max",
   DEFAULT: "",
@@ -46,21 +67,22 @@ function createLap(elapsedTime) {
   laps.nRows += 1;
 
   if (laps.nRows === 1) {
-    laps.max = laps.min = { idx: 1, time };
+    laps.max = { idx: 1, time };
+    laps.min = laps.max;
     return;
   }
 
   // prettier-ignore
   const lapType =
-    time < laps.min.time ? LapType.MIN :
-    time > laps.max.time ? LapType.MAX : LapType.DEFAULT;
+    time < laps.min.time ? LapTypes.MIN :
+    time > laps.max.time ? LapTypes.MAX : LapTypes.DEFAULT;
 
-  if (lapType !== LapType.DEFAULT) {
+  if (lapType !== LapTypes.DEFAULT) {
     laps[lapType] = { idx: laps.nRows, time };
   }
 
   if (laps.nRows === 2) {
-    lapTable.children[laps.nRows - laps.min.idx].className = LapType.MIN;
+    lapTable.children[laps.nRows - laps.min.idx].className = LapTypes.MIN;
     lapTable.children[laps.nRows - laps.max.idx].className = LapType.MAX;
     return;
   }
@@ -77,6 +99,7 @@ function resetLaps() {
   lapTable.innerHTML = "";
   laps.nRows = 0;
   laps.total = 0;
+  laps.max = laps.min = undefined;
 }
 
 mainButton.onclick = () => {
